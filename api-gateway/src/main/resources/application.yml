@@ -1,0 +1,30 @@
+server:
+  port: 9090
+spring:
+  main:
+    web-application-type: reactive
+  application:
+    name: API-CLOUD-GATEWAY
+  cloud:
+    gateway:
+      routes:
+        - id: CLIENT-SERVICE
+          uri: lb://CLIENT-SERVICE
+          predicates:
+            - Path=/api/client/**
+        - id: MEDICATION-SERVICE
+          uri: lb://MEDICATION-SERVICE
+          predicates:
+            - Path=/api/medication/**
+        - id: DRONE-SERVICE
+          uri: lb://DRONE-SERVICE
+          predicates:
+            - Path=/api/drone/**
+
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/

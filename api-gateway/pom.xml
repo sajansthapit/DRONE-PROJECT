@@ -7,10 +7,10 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>medication-service</artifactId>
+    <artifactId>api-gateway</artifactId>
     <packaging>jar</packaging>
 
-    <name>medication-service</name>
+    <name>api-gateway</name>
     <url>http://maven.apache.org</url>
 
     <properties>
@@ -19,21 +19,15 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-gateway</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>3.8.1</version>
             <scope>test</scope>
-        </dependency>
-
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <scope>runtime</scope>
         </dependency>
     </dependencies>
 </project>

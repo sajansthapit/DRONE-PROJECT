@@ -1,15 +1,11 @@
 package com.sajansthapit.droneservice.models;
 
-import com.sajansthapit.droneservice.constants.Messages;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-
 import java.util.Date;
 
 import static com.sajansthapit.droneservice.constants.Messages.*;
