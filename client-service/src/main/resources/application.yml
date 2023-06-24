@@ -1,6 +1,6 @@
 spring:
   application:
-    name: DRONE-PROJECT
+    name: CLIENT-SERVICE
   profiles:
     active: dev
   mvc:
@@ -15,12 +15,6 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: false
-
-  servlet:
-    multipart:
-      enabled: true
-      max-file-size: 30MB
-      max-request-size: 30MB
 
 logging:
   level:

@@ -11,8 +11,12 @@
 	<groupId>com.sajansthapit</groupId>
 	<artifactId>drone-project</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
 	<name>drone-project</name>
 	<description>Drone project</description>
+	<modules>
+		<module>client-service</module>
+	</modules>
 	<properties>
 		<java.version>11</java.version>
 	</properties>
