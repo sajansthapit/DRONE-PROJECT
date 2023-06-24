@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.util.Date;
@@ -28,11 +29,13 @@ public class Medication {
     @SequenceGenerator(name = "medication_id_generator", sequenceName = "medication_id_sequence", allocationSize = 1)
     private Long id;
 
+    @Column(unique = true)
     @NotBlank(message = NAME_REQUIRED)
     @Pattern(regexp = MEDICATION_NAME_REGEX, message = INVALID_NAME)
     private String name;
 
-    @NotBlank(message = WEIGHT_REQUIRED)
+//    @NotBlank(message = WEIGHT_REQUIRED)
+    @Min(value = 1, message = WEIGHT_MIN)
     private Double weight;
 
     @NotBlank(message = CODE_REQUIRED)
@@ -42,7 +45,8 @@ public class Medication {
     @NotBlank(message = IMAGE_REQUIRED)
     private String image;
 
-    @NotBlank(message = QUANTITY_REQUIRED)
+//    @NotBlank(message = QUANTITY_REQUIRED)
+    @Min(value = 0, message = QUANTITY_MIN)
     private Integer quantity;
 
     @CreationTimestamp

@@ -6,3 +6,6 @@ spring:
     username: postgres
     password: root
     initialization-mode: always
+user-defined:
+  root:
+    folder: medication-images

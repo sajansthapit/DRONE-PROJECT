@@ -15,7 +15,11 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: false
-
+  servlet:
+    multipart:
+      enabled: true
+      max-request-size: 2MB
+      max-file-size: 2MB
 logging:
   level:
     org.springframework.web: ERROR
