@@ -12,4 +12,7 @@ public interface Messages {
     String WEIGHT_MIN = "Weight of medication must be greater than 1";
     String MEDICATION_SAVED = "Medication saved successfully";
     String UNIQUE_NAME_VIOLATION = "The given name of medication already exists";
+    String UNSUPPORTED_CONTENT = "Only image file are accepted";
+    String EXCEEDS_SIZE_LIMIT = "Maximum 2MB image file are supported";
+    String IMAGE_NOT_FOUND = "Image Not Found";
 }

@@ -24,7 +24,6 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    @Transactional
     public SaveClientResponseDto saveClient(ClientDto clientDto) {
         Client client = Client.builder()
                 .name(clientDto.getName())

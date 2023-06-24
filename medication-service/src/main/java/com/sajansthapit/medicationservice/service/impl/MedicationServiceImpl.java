@@ -3,7 +3,9 @@ package com.sajansthapit.medicationservice.service.impl;
 import com.sajansthapit.medicationservice.constants.Messages;
 import com.sajansthapit.medicationservice.dto.MedicationDto;
 import com.sajansthapit.medicationservice.dto.response.SaveMedicationResponseDto;
+import com.sajansthapit.medicationservice.exceptionhandler.exceptions.ImageNotFoundException;
 import com.sajansthapit.medicationservice.exceptionhandler.exceptions.UniqueViolationException;
+import com.sajansthapit.medicationservice.exceptionhandler.exceptions.UnsupportedContentTypeException;
 import com.sajansthapit.medicationservice.models.Medication;
 import com.sajansthapit.medicationservice.repository.MedicationRepository;
 import com.sajansthapit.medicationservice.service.MedicationService;
@@ -28,10 +30,14 @@ public class MedicationServiceImpl implements MedicationService {
     }
 
     @Override
-    @Transactional
     public SaveMedicationResponseDto saveMedication(MedicationDto medicationDto, MultipartFile image) {
-        String imagePath = MultipartFileUpload.upload(image, rootFolder);
+        if (image.getContentType() == null)
+            throw new ImageNotFoundException(Messages.IMAGE_NOT_FOUND);
 
+        if (!isSupportedContentType(image.getContentType()))
+            throw new UnsupportedContentTypeException(Messages.UNSUPPORTED_CONTENT);
+
+        String imagePath = MultipartFileUpload.upload(image, rootFolder);
         Medication medication = Medication.builder()
                 .name(medicationDto.getName())
                 .weight(medicationDto.getWeight())
@@ -39,6 +45,7 @@ public class MedicationServiceImpl implements MedicationService {
                 .quantity(medicationDto.getQuantity())
                 .image(imagePath)
                 .build();
+
         try {
             Medication savedMedication = medicationRepository.save(medication);
             return new SaveMedicationResponseDto(HttpStatus.CREATED, Messages.MEDICATION_SAVED, savedMedication.getId());
@@ -53,5 +60,11 @@ public class MedicationServiceImpl implements MedicationService {
     private boolean isNameUnique(String name) {
         return medicationRepository.findByName(name)
                 .isPresent();
+    }
+
+    private boolean isSupportedContentType(String contentType) {
+        return contentType.equals("image/png")
+                || contentType.equals("image/jpg")
+                || contentType.equals("image/jpeg");
     }
 }
