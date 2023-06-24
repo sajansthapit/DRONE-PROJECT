@@ -20,6 +20,7 @@
         <module>drone-service</module>
         <module>api-gateway</module>
         <module>service-discovery</module>
+        <module>shipment-service</module>
     </modules>
     <properties>
         <java.version>11</java.version>
