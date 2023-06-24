@@ -17,6 +17,7 @@
 	<modules>
 		<module>client-service</module>
 		<module>medication-service</module>
+		<module>drone-service</module>
 	</modules>
 	<properties>
 		<java.version>11</java.version>
