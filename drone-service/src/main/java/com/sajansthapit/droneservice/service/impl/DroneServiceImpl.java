@@ -7,7 +7,7 @@ import com.sajansthapit.droneservice.exceptionhandler.exceptions.UniqueViolation
 import com.sajansthapit.droneservice.models.Drone;
 import com.sajansthapit.droneservice.repository.DroneRepository;
 import com.sajansthapit.droneservice.service.DroneService;
-import com.sajansthapit.droneservice.util.DroneModel;
+import com.sajansthapit.droneservice.util.enumns.DroneModel;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

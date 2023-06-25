@@ -14,6 +14,8 @@ import com.sajansthapit.medicationservice.repository.MedicationRequestRepository
 import com.sajansthapit.medicationservice.service.MedicationRequestService;
 import com.sajansthapit.medicationservice.service.MedicationService;
 import com.sajansthapit.medicationservice.util.http.HttpClientWrapper;
+import com.sajansthapit.medicationservice.util.mq.MedicationMessagePublisher;
+import com.sajansthapit.medicationservice.util.mq.dto.DroneMessageDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -30,14 +32,16 @@ public class MedicationRequestServiceImpl implements MedicationRequestService {
     private final MedicationRequestRepository medicationRequestRepository;
     private final MedicationService medicationService;
     private final HttpClientWrapper httpClientWrapper;
+    private final MedicationMessagePublisher medicationMessagePublisher;
 
     @Value("${client.url}")
     private String clientUrl;
 
-    public MedicationRequestServiceImpl(MedicationRequestRepository medicationRequestRepository, MedicationService medicationService, HttpClientWrapper httpClientWrapper) {
+    public MedicationRequestServiceImpl(MedicationRequestRepository medicationRequestRepository, MedicationService medicationService, HttpClientWrapper httpClientWrapper, MedicationMessagePublisher medicationMessagePublisher) {
         this.medicationRequestRepository = medicationRequestRepository;
         this.medicationService = medicationService;
         this.httpClientWrapper = httpClientWrapper;
+        this.medicationMessagePublisher = medicationMessagePublisher;
     }
 
     @Override
@@ -46,13 +50,12 @@ public class MedicationRequestServiceImpl implements MedicationRequestService {
         Map<Medication, Integer> medicationQuantityMap = new HashMap<>();
         //check if client exits
         String checkClientUrl = clientUrl.concat(MedicationConstants.CLIENT_CHECK_URL.concat(clientMedicationRequestDto.getClientId().toString()));
-        BaseResponse clientResponse = httpClientWrapper.get(checkClientUrl, null, BaseResponse.class, MessageFormat.format(Messages.CLIENT_NOT_FOUND, clientMedicationRequestDto.getClientId()), MedicationConstants.CLIENT_SERVICE);
+        httpClientWrapper.get(checkClientUrl, null, BaseResponse.class, MessageFormat.format(Messages.CLIENT_NOT_FOUND, clientMedicationRequestDto.getClientId()), MedicationConstants.CLIENT_SERVICE);
 
         if (clientMedicationRequestDto.getMedications().size() == 0)
             throw new EmptyMedicationException(Messages.EMPTY_MEDICATION);
 
         double totalWeight = 0;
-
         for (MedicationRequestDto medicationRequestDto : clientMedicationRequestDto.getMedications()) {
             Medication medication = medicationService.findById(medicationRequestDto.getId());
             medicationQuantityMap.put(medication, medicationRequestDto.getQuantity());
@@ -85,6 +88,18 @@ public class MedicationRequestServiceImpl implements MedicationRequestService {
             medicationService.updateMedicationQuantity(entry.getKey().getId(), newQuantity);
 
         }
+
+        //send message to drone for new request
+        DroneMessageDto droneMessageDto = DroneMessageDto.builder()
+                .requestId(uniqueId)
+                .totalWeight(totalWeight)
+                .clientId(clientMedicationRequestDto.getClientId())
+                .build();
+        sendMessageToDrone(droneMessageDto);
         return new BaseResponse(HttpStatus.OK, Messages.MEDICATION_REQUEST_SUCCESS);
+    }
+
+    private void sendMessageToDrone(DroneMessageDto droneMessageDto) {
+        medicationMessagePublisher.publishMessageToDroneService(droneMessageDto);
     }
 }

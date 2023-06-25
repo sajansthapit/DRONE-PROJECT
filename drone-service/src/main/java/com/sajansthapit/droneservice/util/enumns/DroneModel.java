@@ -1,4 +1,4 @@
-package com.sajansthapit.droneservice.util;
+package com.sajansthapit.droneservice.util.enumns;
 
 import com.sajansthapit.droneservice.constants.Messages;
 import com.sajansthapit.droneservice.exceptionhandler.exceptions.InvalidDroneModelException;

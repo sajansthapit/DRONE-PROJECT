@@ -1,4 +1,4 @@
-package com.sajansthapit.droneservice.util;
+package com.sajansthapit.droneservice.util.enumns;
 
 public enum DroneState {
     IDLE("IDLE"),

@@ -36,3 +36,6 @@ logging:
   level:
     org.springframework.web: ERROR
     com: DEBUG
+
+queue:
+  medication: medication-queue
