@@ -1,13 +1,12 @@
 package com.sajansthapit.medicationservice.controller;
 
 import com.sajansthapit.medicationservice.dto.MedicationDto;
+import com.sajansthapit.medicationservice.dto.response.GetAllMedicationResponseDto;
 import com.sajansthapit.medicationservice.dto.response.SaveMedicationResponseDto;
 import com.sajansthapit.medicationservice.service.MedicationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/medication")
@@ -35,4 +34,14 @@ public class MedicationController {
         SaveMedicationResponseDto response = medicationService.saveMedication(medicationDto, image);
         return new ResponseEntity<>(response, response.getStatus());
     }
+
+    @GetMapping
+    public ResponseEntity<GetAllMedicationResponseDto> getAll(@RequestParam(name = "page")
+                                                              Integer page,
+                                                              @RequestParam(name = "size")
+                                                              Integer size) {
+        GetAllMedicationResponseDto response = medicationService.getAllMedications(page, size);
+        return new ResponseEntity<>(response, response.getStatus());
+    }
+
 }

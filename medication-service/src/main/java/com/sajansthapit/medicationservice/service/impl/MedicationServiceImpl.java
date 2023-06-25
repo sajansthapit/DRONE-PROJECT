@@ -2,6 +2,8 @@ package com.sajansthapit.medicationservice.service.impl;
 
 import com.sajansthapit.medicationservice.constants.Messages;
 import com.sajansthapit.medicationservice.dto.MedicationDto;
+import com.sajansthapit.medicationservice.dto.PaginationDto;
+import com.sajansthapit.medicationservice.dto.response.GetAllMedicationResponseDto;
 import com.sajansthapit.medicationservice.dto.response.SaveMedicationResponseDto;
 import com.sajansthapit.medicationservice.exceptionhandler.exceptions.ImageNotFoundException;
 import com.sajansthapit.medicationservice.exceptionhandler.exceptions.UniqueViolationException;
@@ -12,9 +14,17 @@ import com.sajansthapit.medicationservice.service.MedicationService;
 import com.sajansthapit.medicationservice.util.MultipartFileUpload;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.persistence.EntityNotFoundException;
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MedicationServiceImpl implements MedicationService {
@@ -53,6 +63,42 @@ public class MedicationServiceImpl implements MedicationService {
             }
             throw exception;
         }
+    }
+
+    @Override
+    public GetAllMedicationResponseDto getAllMedications(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<Medication> medicationPage = medicationRepository.findAll(pageable);
+        List<MedicationDto> medicationDtoList = medicationPage.map(this::toDto).stream().collect(Collectors.toList());
+        PaginationDto paginationDto = PaginationDto.builder()
+                .currentPage(medicationPage.getNumber())
+                .totalItems(medicationPage.getTotalElements())
+                .totalPages(medicationPage.getTotalPages())
+                .build();
+        return new GetAllMedicationResponseDto(HttpStatus.OK, Messages.GET_ALL_MEDICATION_RESPONSE, medicationDtoList, paginationDto);
+    }
+
+    @Override
+    public Medication findById(Long id) {
+        return medicationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(MessageFormat.format(Messages.MEDICATION_NOT_FOUND, id)));
+    }
+
+    @Override
+    public void updateMedicationQuantity(Long id, Integer newQuantity) {
+        Medication medication = findById(id);
+        medication.setQuantity(newQuantity);
+        medicationRepository.save(medication);
+    }
+
+    private MedicationDto toDto(Medication medication) {
+        return MedicationDto.builder()
+                .id(medication.getId())
+                .name(medication.getName())
+                .quantity(medication.getQuantity())
+                .weight(medication.getWeight())
+                .code(medication.getCode())
+                .build();
     }
 
     private boolean isNameUnique(String name) {
