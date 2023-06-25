@@ -1,7 +1,7 @@
 package com.sajansthapit.clientservice.service;
 
-import com.sajansthapit.clientservice.dto.BaseResponse;
 import com.sajansthapit.clientservice.dto.ClientDto;
+import com.sajansthapit.clientservice.dto.response.GetClientByIdResponseDto;
 import com.sajansthapit.clientservice.dto.response.SaveClientResponseDto;
 import com.sajansthapit.clientservice.models.Client;
 
@@ -23,9 +23,9 @@ public interface ClientService {
     Client findById(Long id);
 
     /**
-     * Method to check if the client exits
+     * Method to get client by id if it exits
      * @param id Long
-     * @return BaseResponse
+     * @return GetClientByIdResponseDto
      */
-    BaseResponse checkIfClientExists(Long id);
+     GetClientByIdResponseDto getClientById(Long id);
 }

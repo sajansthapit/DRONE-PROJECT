@@ -2,6 +2,7 @@ package com.sajansthapit.clientservice.controller;
 
 import com.sajansthapit.clientservice.dto.BaseResponse;
 import com.sajansthapit.clientservice.dto.ClientDto;
+import com.sajansthapit.clientservice.dto.response.GetClientByIdResponseDto;
 import com.sajansthapit.clientservice.dto.response.SaveClientResponseDto;
 import com.sajansthapit.clientservice.service.ClientService;
 import org.springframework.http.ResponseEntity;
@@ -26,8 +27,8 @@ public class ClientController {
     }
 
     @GetMapping("/check/{id}")
-    public ResponseEntity<BaseResponse> checkIfClientExists(@PathVariable(value = "id") Long id) {
-        BaseResponse response = clientService.checkIfClientExists(id);
+    public ResponseEntity<GetClientByIdResponseDto> checkIfClientExists(@PathVariable(value = "id") Long id) {
+        GetClientByIdResponseDto response = clientService.getClientById(id);
         return new ResponseEntity<>(response, response.getStatus());
     }
 }

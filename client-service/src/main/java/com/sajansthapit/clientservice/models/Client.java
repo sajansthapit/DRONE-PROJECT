@@ -36,11 +36,11 @@ public class Client {
 
     @NotBlank(message = LATITUDE_REQUIRED)
 //    @Pattern(regexp = LOCATION_REGEX)
-    private String latitude;
+    private Double latitude;
 
     @NotBlank(message = LONGITUDE_REQUIRED)
 //    @Pattern(regexp = LOCATION_REGEX)
-    private String longitude;
+    private Double longitude;
 
     @CreationTimestamp
     @Column(updatable = false)

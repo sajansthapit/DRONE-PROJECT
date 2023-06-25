@@ -5,6 +5,7 @@ import com.sajansthapit.medicationservice.constants.Messages;
 import com.sajansthapit.medicationservice.dto.BaseResponse;
 import com.sajansthapit.medicationservice.dto.request.client.ClientMedicationRequestDto;
 import com.sajansthapit.medicationservice.dto.request.client.MedicationRequestDto;
+import com.sajansthapit.medicationservice.dto.response.client.GetClientByIdResponseDto;
 import com.sajansthapit.medicationservice.exceptionhandler.exceptions.EmptyMedicationException;
 import com.sajansthapit.medicationservice.exceptionhandler.exceptions.InsufficientMedicationQuantityException;
 import com.sajansthapit.medicationservice.exceptionhandler.exceptions.WeightOverLimitException;
@@ -50,7 +51,7 @@ public class MedicationRequestServiceImpl implements MedicationRequestService {
         Map<Medication, Integer> medicationQuantityMap = new HashMap<>();
         //check if client exits
         String checkClientUrl = clientUrl.concat(MedicationConstants.CLIENT_CHECK_URL.concat(clientMedicationRequestDto.getClientId().toString()));
-        httpClientWrapper.get(checkClientUrl, null, BaseResponse.class, MessageFormat.format(Messages.CLIENT_NOT_FOUND, clientMedicationRequestDto.getClientId()), MedicationConstants.CLIENT_SERVICE);
+        GetClientByIdResponseDto clientResponseDto = httpClientWrapper.get(checkClientUrl, null, GetClientByIdResponseDto.class, MessageFormat.format(Messages.CLIENT_NOT_FOUND, clientMedicationRequestDto.getClientId()), MedicationConstants.CLIENT_SERVICE);
 
         if (clientMedicationRequestDto.getMedications().size() == 0)
             throw new EmptyMedicationException(Messages.EMPTY_MEDICATION);
@@ -94,6 +95,8 @@ public class MedicationRequestServiceImpl implements MedicationRequestService {
                 .requestId(uniqueId)
                 .totalWeight(totalWeight)
                 .clientId(clientMedicationRequestDto.getClientId())
+                .latitude(clientResponseDto.getClientDto().getLatitude())
+                .longitude(clientResponseDto.getClientDto().getLongitude())
                 .build();
         sendMessageToDrone(droneMessageDto);
         return new BaseResponse(HttpStatus.OK, Messages.MEDICATION_REQUEST_SUCCESS);

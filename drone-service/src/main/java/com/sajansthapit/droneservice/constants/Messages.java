@@ -8,4 +8,6 @@ public interface Messages {
     String UNIQUE_SERIAL_NUMBER_REQUIRED = "Unique Serial Number is required";
     String INVALID_DRONE_MODEL = "Given Drone model not found";
     String DRONE_SAVED = "Drone list saved successfully";
+    String INVALID_MIN_WEIGHT = "Total weight must be greater than 0";
+    String INVALID_MAX_WEIGHT = "Total weight must be smaller than 500";
 }

@@ -3,6 +3,7 @@ package com.sajansthapit.clientservice.service.impl;
 import com.sajansthapit.clientservice.constants.Messages;
 import com.sajansthapit.clientservice.dto.BaseResponse;
 import com.sajansthapit.clientservice.dto.ClientDto;
+import com.sajansthapit.clientservice.dto.response.GetClientByIdResponseDto;
 import com.sajansthapit.clientservice.dto.response.SaveClientResponseDto;
 import com.sajansthapit.clientservice.exceptionhandler.exceptions.UniqueViolationException;
 import com.sajansthapit.clientservice.models.Client;
@@ -51,13 +52,16 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public BaseResponse checkIfClientExists(Long id) {
+    public GetClientByIdResponseDto getClientById(Long id) {
         Client client = findById(id);
-        if (client != null)
-            return new BaseResponse(HttpStatus.OK, MessageFormat.format(Messages.CLIENT_EXISTS, id));
-        throw new EntityNotFoundException(MessageFormat.format(Messages.CLIENT_NOT_FOUND, id));
+        ClientDto clientDto = ClientDto.builder()
+                .name(client.getName())
+                .email(client.getEmail())
+                .latitude(client.getLatitude())
+                .longitude(client.getLongitude())
+                .build();
+        return new GetClientByIdResponseDto(HttpStatus.OK, MessageFormat.format(Messages.CLIENT_EXISTS, id), clientDto);
     }
-
 
     private boolean isEmailUnique(String email) {
         return clientRepository.findByEmail(email)

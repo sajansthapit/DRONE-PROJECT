@@ -1,4 +1,4 @@
-package com.sajansthapit.clientservice.dto;
+package com.sajansthapit.medicationservice.dto.response.client;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
