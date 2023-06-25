@@ -78,4 +78,10 @@ public class APIExceptions {
         BaseResponse response = new BaseResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
         return new ResponseEntity<>(response, response.getStatus());
     }
+
+    @ExceptionHandler(value = HttpFailedException.class)
+    public ResponseEntity<BaseResponse> handleHttpFailedException(HttpFailedException exception) {
+        BaseResponse response = new BaseResponse(HttpStatus.SERVICE_UNAVAILABLE, exception.getMessage());
+        return new ResponseEntity<>(response, response.getStatus());
+    }
 }

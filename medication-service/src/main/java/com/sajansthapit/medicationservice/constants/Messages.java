@@ -21,5 +21,7 @@ public interface Messages {
     String WEIGHT_OVER_LIMIT = "Total weight of medication is greater than {0}";
     String MEDICATION_REQUEST_SUCCESS = "The request for the medication has been made";
     String EMPTY_MEDICATION = "Medication List can't be empty";
+    String FAILED_TO_CALL_SERVICE = "Failed to call {0}";
+    String CLIENT_NOT_FOUND = "Client with id {0} not found";
 
 }

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
@@ -28,4 +29,9 @@ public class APIExceptions {
         return new ResponseEntity<>(response, response.getStatus());
     }
 
+    @ExceptionHandler(value = EntityNotFoundException.class)
+    public ResponseEntity<BaseResponse> handleEntityNotFoundException(EntityNotFoundException exception){
+        BaseResponse response = new BaseResponse(HttpStatus.NOT_FOUND, exception.getMessage());
+        return new ResponseEntity<>(response, response.getStatus());
+    }
 }

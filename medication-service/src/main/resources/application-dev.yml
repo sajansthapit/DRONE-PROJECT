@@ -9,3 +9,5 @@ spring:
 user-defined:
   root:
     folder: medication-images
+client:
+  url: http://localhost:8080/

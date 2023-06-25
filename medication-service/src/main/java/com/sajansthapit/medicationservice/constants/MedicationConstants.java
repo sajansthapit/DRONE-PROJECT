@@ -5,4 +5,6 @@ public interface MedicationConstants {
     String MEDICATION_CODE_REGEX = "^[A-Z0-9_]+$";
     String HOME_FOLDER = System.getProperty("user.home");
     Integer MAX_MEDICATION_WEIGHT = 500;
+    String CLIENT_CHECK_URL = "/api/client/check/";
+    String CLIENT_SERVICE = "client service";
 }

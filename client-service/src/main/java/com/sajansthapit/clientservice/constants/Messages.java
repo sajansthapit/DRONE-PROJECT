@@ -8,4 +8,6 @@ public interface Messages {
     String LONGITUDE_REQUIRED = "Longitude is required";
     String CLIENT_SAVED = "Client saved successfully";
     String UNIQUE_EMAIL_VIOLATION = "The given email already exists";
+    String CLIENT_NOT_FOUND = "Client with id {0} not found";
+    String CLIENT_EXISTS = "Client with id {0} exists";
 }

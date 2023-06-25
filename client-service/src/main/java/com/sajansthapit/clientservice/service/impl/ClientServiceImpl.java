@@ -1,6 +1,7 @@
 package com.sajansthapit.clientservice.service.impl;
 
 import com.sajansthapit.clientservice.constants.Messages;
+import com.sajansthapit.clientservice.dto.BaseResponse;
 import com.sajansthapit.clientservice.dto.ClientDto;
 import com.sajansthapit.clientservice.dto.response.SaveClientResponseDto;
 import com.sajansthapit.clientservice.exceptionhandler.exceptions.UniqueViolationException;
@@ -12,7 +13,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import javax.persistence.EntityNotFoundException;
+import java.text.MessageFormat;
 
 @Service
 @Slf4j
@@ -41,6 +43,21 @@ public class ClientServiceImpl implements ClientService {
             throw exception;
         }
     }
+
+    @Override
+    public Client findById(Long id) {
+        return clientRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(MessageFormat.format(Messages.CLIENT_NOT_FOUND, id)));
+    }
+
+    @Override
+    public BaseResponse checkIfClientExists(Long id) {
+        Client client = findById(id);
+        if (client != null)
+            return new BaseResponse(HttpStatus.OK, MessageFormat.format(Messages.CLIENT_EXISTS, id));
+        throw new EntityNotFoundException(MessageFormat.format(Messages.CLIENT_NOT_FOUND, id));
+    }
+
 
     private boolean isEmailUnique(String email) {
         return clientRepository.findByEmail(email)

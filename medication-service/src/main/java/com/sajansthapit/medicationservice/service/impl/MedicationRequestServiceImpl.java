@@ -13,6 +13,8 @@ import com.sajansthapit.medicationservice.models.MedicationRequest;
 import com.sajansthapit.medicationservice.repository.MedicationRequestRepository;
 import com.sajansthapit.medicationservice.service.MedicationRequestService;
 import com.sajansthapit.medicationservice.service.MedicationService;
+import com.sajansthapit.medicationservice.util.http.HttpClientWrapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -27,16 +29,24 @@ public class MedicationRequestServiceImpl implements MedicationRequestService {
 
     private final MedicationRequestRepository medicationRequestRepository;
     private final MedicationService medicationService;
+    private final HttpClientWrapper httpClientWrapper;
 
-    public MedicationRequestServiceImpl(MedicationRequestRepository medicationRequestRepository, MedicationService medicationService) {
+    @Value("${client.url}")
+    private String clientUrl;
+
+    public MedicationRequestServiceImpl(MedicationRequestRepository medicationRequestRepository, MedicationService medicationService, HttpClientWrapper httpClientWrapper) {
         this.medicationRequestRepository = medicationRequestRepository;
         this.medicationService = medicationService;
+        this.httpClientWrapper = httpClientWrapper;
     }
 
     @Override
     @Transactional
     public BaseResponse saveClientMedicationRequest(ClientMedicationRequestDto clientMedicationRequestDto) {
         Map<Medication, Integer> medicationQuantityMap = new HashMap<>();
+        //check if client exits
+        String checkClientUrl = clientUrl.concat(MedicationConstants.CLIENT_CHECK_URL.concat(clientMedicationRequestDto.getClientId().toString()));
+        BaseResponse clientResponse = httpClientWrapper.get(checkClientUrl, null, BaseResponse.class, MessageFormat.format(Messages.CLIENT_NOT_FOUND, clientMedicationRequestDto.getClientId()), MedicationConstants.CLIENT_SERVICE);
 
         if (clientMedicationRequestDto.getMedications().size() == 0)
             throw new EmptyMedicationException(Messages.EMPTY_MEDICATION);
