@@ -14,4 +14,5 @@ public class DroneDto {
     private String serialNumber;
     private String model;
     private String state;
+    private Double battery;
 }

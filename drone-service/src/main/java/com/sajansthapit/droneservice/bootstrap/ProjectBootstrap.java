@@ -39,11 +39,12 @@ public class ProjectBootstrap implements CommandLineRunner {
                 List<DroneDto> droneDtoList = new ArrayList<>();
                 while ((line = br.readLine()) != null) {
                     String[] droneList = line.split(splitBy);
-                    if (droneList.length == 3) {
+                    if (droneList.length == 4) {
                         droneDtoList.add(DroneDto.builder()
                                 .serialNumber(droneList[0].trim())
                                 .model(droneList[1].trim())
                                 .state(droneList[2].trim())
+                                .battery(Double.valueOf(droneList[3].trim()))
                                 .build());
                     }
                 }

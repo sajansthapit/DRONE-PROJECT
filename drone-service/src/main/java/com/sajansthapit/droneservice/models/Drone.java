@@ -33,6 +33,8 @@ public class Drone {
     @NotBlank(message = STATE_REQUIRED)
     private String state;
 
+    private Double battery;
+
     @CreationTimestamp
     @Column(updatable = false)
     private Date createdDate;

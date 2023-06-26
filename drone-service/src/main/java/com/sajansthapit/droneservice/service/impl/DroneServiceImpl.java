@@ -34,6 +34,7 @@ public class DroneServiceImpl implements DroneService {
                     .serialNumber(droneDto.getSerialNumber())
                     .model(droneDto.getModel())
                     .state(droneDto.getState())
+                    .battery(droneDto.getBattery())
                     .build();
             try {
                 droneRepository.save(drone);
