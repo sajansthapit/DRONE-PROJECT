@@ -20,10 +20,10 @@ public class DroneShipment {
     @SequenceGenerator(name = "drone_shipment_id_generator", sequenceName = "drone_shipment_id_sequence", allocationSize = 1)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Drone drone;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private DroneRequest droneRequest;
 
     @CreationTimestamp

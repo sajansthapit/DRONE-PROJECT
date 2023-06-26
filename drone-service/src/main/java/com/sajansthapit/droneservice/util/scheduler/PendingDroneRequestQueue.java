@@ -1,8 +1,13 @@
 package com.sajansthapit.droneservice.util.scheduler;
 
+import com.sajansthapit.droneservice.dto.DroneUpdateDto;
+import com.sajansthapit.droneservice.models.Drone;
 import com.sajansthapit.droneservice.models.DroneRequest;
 import com.sajansthapit.droneservice.service.DroneRequestService;
+import com.sajansthapit.droneservice.service.DroneService;
+import com.sajansthapit.droneservice.service.DroneShipmentService;
 import com.sajansthapit.droneservice.util.enumns.DroneRequestStatus;
+import com.sajansthapit.droneservice.util.enumns.DroneState;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -16,9 +21,13 @@ import java.util.Queue;
 public class PendingDroneRequestQueue {
 
     private final DroneRequestService droneRequestService;
+    private final DroneService droneService;
+    private final DroneShipmentService droneShipmentService;
 
-    public PendingDroneRequestQueue(DroneRequestService droneRequestService) {
+    public PendingDroneRequestQueue(DroneRequestService droneRequestService, DroneService droneService, DroneShipmentService droneShipmentService) {
         this.droneRequestService = droneRequestService;
+        this.droneService = droneService;
+        this.droneShipmentService = droneShipmentService;
     }
 
     private final Queue<DroneRequest> droneRequestQueue = new ArrayDeque<>(10);
@@ -30,9 +39,21 @@ public class PendingDroneRequestQueue {
             Optional<DroneRequest> droneRequestOptional = droneRequestService.findLatestRequest();
             droneRequestOptional.ifPresent(droneRequest -> droneRequestQueue.offer(droneRequestService.updateDroneRequestStatus(droneRequest, DroneRequestStatus.PROCESSING.getRequestStatus())));
         }
+        if (droneRequestQueue.size() != 0) {
+            assignDroneToRequest();
+        }
     }
 
-    private synchronized void assignDroneToRequest(){
+    private synchronized void assignDroneToRequest() {
+        DroneRequest droneRequest = droneRequestQueue.poll();
+        Optional<Drone> droneOptional = droneService.checkRequestAndAssignDrone(droneRequest);
+        if (droneOptional.isEmpty()) droneRequestQueue.offer(droneRequest);
+        else {
+            DroneUpdateDto updateDto = new DroneUpdateDto(DroneState.LOADING.getState(), droneOptional.get().getBattery());
+            Drone drone = droneService.updateDrone(updateDto, droneOptional.get().getId());
+            droneShipmentService.saveDroneShipment(droneRequest, drone);
+            droneRequestService.updateDroneRequestStatus(droneRequest, DroneRequestStatus.COMPLETED.getRequestStatus());
+        }
 
     }
 
