@@ -12,7 +12,7 @@ public class DistanceCalculator {
                 * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         double distance = DroneConstants.EARTH_RADIUS * c * 1000; // convert to meters
-
+        distance = Math.pow(distance, 2);
         return Math.sqrt(distance);
     }
 }

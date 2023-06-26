@@ -15,7 +15,7 @@ spring:
         - id: MEDICATION-SERVICE
           uri: lb://MEDICATION-SERVICE
           predicates:
-            - Path=/api/medication/**id
+            - Path=/api/medication/**
         - id: DRONE-SERVICE
           uri: lb://DRONE-SERVICE
           predicates:

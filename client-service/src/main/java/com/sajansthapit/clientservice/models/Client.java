@@ -34,11 +34,11 @@ public class Client {
     @Pattern(regexp = EMAIL_REGEX, message = INVALID_EMAIL)
     private String email;
 
-    @NotBlank(message = LATITUDE_REQUIRED)
+    //@NotBlank(message = LATITUDE_REQUIRED)
 //    @Pattern(regexp = LOCATION_REGEX)
     private Double latitude;
 
-    @NotBlank(message = LONGITUDE_REQUIRED)
+    //@NotBlank(message = LONGITUDE_REQUIRED)
 //    @Pattern(regexp = LOCATION_REGEX)
     private Double longitude;
 

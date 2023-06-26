@@ -7,6 +7,8 @@ eureka:
     fetch-registry: false
   instance:
     hostname: localhost
+  server:
+    enableSelfPreservation: false
 
 spring:
   application:

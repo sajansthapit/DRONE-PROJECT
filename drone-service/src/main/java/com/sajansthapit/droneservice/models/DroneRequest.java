@@ -28,7 +28,7 @@ public class DroneRequest {
     private String requestId;
 
     @Min(value = 0, message = INVALID_MIN_WEIGHT)
-    @Max(value = DroneConstants.MAX_MEDICATION_WEIGHT, message = INVALID_MAX_WEIGHT)
+    @Max(value = 500, message = INVALID_MAX_WEIGHT)
     private Double totalWeight;
 
     private Long clientId;
