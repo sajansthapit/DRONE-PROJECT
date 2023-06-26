@@ -3,10 +3,14 @@ package com.sajansthapit.droneservice.models;
 import com.sajansthapit.droneservice.constants.DroneConstants;
 import com.sajansthapit.droneservice.constants.Messages;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+
+import java.util.Date;
 
 import static com.sajansthapit.droneservice.constants.Messages.*;
 
@@ -40,5 +44,12 @@ public class DroneRequest {
     private Double distance;
 
     private String status;
+
+    @CreationTimestamp
+    @Column(updatable = false)
+    private Date createdDate;
+
+    @UpdateTimestamp
+    private Date updatedDate;
 
 }
