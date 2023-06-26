@@ -7,8 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import java.util.ArrayDeque;
 import java.util.Optional;
 import java.util.Queue;
@@ -34,5 +32,8 @@ public class PendingDroneRequestQueue {
         }
     }
 
+    private synchronized void assignDroneToRequest(){
+
+    }
 
 }

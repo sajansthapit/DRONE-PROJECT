@@ -5,14 +5,17 @@ import com.sajansthapit.droneservice.dto.BaseResponse;
 import com.sajansthapit.droneservice.dto.DroneDto;
 import com.sajansthapit.droneservice.exceptionhandler.exceptions.UniqueViolationException;
 import com.sajansthapit.droneservice.models.Drone;
+import com.sajansthapit.droneservice.models.DroneRequest;
 import com.sajansthapit.droneservice.repository.DroneRepository;
 import com.sajansthapit.droneservice.service.DroneService;
 import com.sajansthapit.droneservice.util.enumns.DroneModel;
+import com.sajansthapit.droneservice.util.enumns.DroneState;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DroneServiceImpl implements DroneService {
@@ -46,6 +49,19 @@ public class DroneServiceImpl implements DroneService {
     @Override
     public long getDroneCounts() {
         return droneRepository.count();
+    }
+
+    @Override
+    public Optional<Drone> checkRequestAndAssignDrone(DroneRequest droneRequest) {
+        List<Drone> droneList = droneRepository.findAllByState(DroneState.IDLE.getState());
+        if(droneList.isEmpty()) return Optional.empty();
+
+        if(droneRequest.getTotalWeight() <= DroneModel.LIGHT_WEIGHT.getMaxWeight()){
+            return null;
+        }
+
+        return null;
+
     }
 
     private boolean isSerialNumberUnique(String serialNumber) {
