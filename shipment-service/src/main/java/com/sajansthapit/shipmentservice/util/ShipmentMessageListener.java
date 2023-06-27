@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.sajansthapit.shipmentservice.constants.Messages;
 import com.sajansthapit.shipmentservice.constants.ShipmentConstants;
 import com.sajansthapit.shipmentservice.dto.BaseResponse;
+import com.sajansthapit.shipmentservice.dto.CheckDroneStateDto;
 import com.sajansthapit.shipmentservice.dto.ShipmentUpdateDto;
 import com.sajansthapit.shipmentservice.models.ShipmentLog;
 import com.sajansthapit.shipmentservice.service.ShipmentLogService;
@@ -37,7 +38,6 @@ public class ShipmentMessageListener {
 
     @RabbitListener(queues = "shipment-queue")
     public void getShipmentMessage(ShipmentMessageDto shipmentMessageDto) {
-        //save log to db
         ShipmentLog shipmentLog = shipmentLogService.saveShipmentLog(shipmentMessageDto);
         log.info("From shipment queue: {}", shipmentMessageDto);
         handleLoadedDrone(shipmentLog);
@@ -87,22 +87,14 @@ public class ShipmentMessageListener {
 
     private void handleReturningDrone(ShipmentLog shipmentLog) {
         if (shipmentLog.getDroneState().equals(DroneState.DELIVERED.getState())) {
-            double timeWait = shipmentLog.getDistance() / 100;
-//            try {
-//                Thread.sleep((long) (timeWait * 1000));
-
             ShipmentLog updatedLog = shipmentLogService.updateShipmentLog(new ShipmentUpdateDto(DroneState.RETURNING.getState(), shipmentLog.getBattery()), shipmentLog.getId());
             DroneUpdateDto droneUpdateDto = DroneUpdateDto
                     .builder()
                     .state(DroneState.RETURNING.getState())
-//                        .battery(updatedLog.getBattery() - timeWait)
                     .build();
             httpClientWrapper.put(droneUrl.concat(ShipmentConstants.DRONE_UPDATE_URL).concat(updatedLog.getDroneId().toString())
                     , new Gson().toJson(droneUpdateDto), null, BaseResponse.class, MessageFormat.format(Messages.FAILED_TO_CALL_SERVICE, "Drone"));
             handleIdleDrone(updatedLog);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
         }
     }
 
@@ -122,6 +114,7 @@ public class ShipmentMessageListener {
                             .build();
                     httpClientWrapper.put(droneUrl.concat(ShipmentConstants.DRONE_UPDATE_URL).concat(updatedLog.getDroneId().toString())
                             , new Gson().toJson(droneUpdateDto), null, BaseResponse.class, MessageFormat.format(Messages.FAILED_TO_CALL_SERVICE, "Drone"));
+                    chargeDrone(updatedLog);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -130,8 +123,45 @@ public class ShipmentMessageListener {
         }
     }
 
+    private void chargeDrone(ShipmentLog shipmentLog) {
+        if (shipmentLog.getDroneState().equals(DroneState.IDLE.getState()) && !shipmentLog.getBattery().equals(ShipmentConstants.MAX_BATTERY)) {
+            Thread scheduledThread = new Thread(() -> {
+                boolean isNotCharged = true;
+                double battery = shipmentLog.getBattery();
+                while (isNotCharged) {
+                    try {
+                        Thread.sleep(10000);
+                        CheckDroneStateDto checkDroneStateDto = httpClientWrapper.get(droneUrl.concat(ShipmentConstants.CHECK_DRONE_STATE_URL.concat(shipmentLog.getDroneId().toString())),
+                                null, CheckDroneStateDto.class, MessageFormat.format(Messages.FAILED_TO_CALL_SERVICE, "Drone"), "Drone");
 
+                        if (!checkDroneStateDto.getStatus().equals(DroneState.IDLE.getState())) isNotCharged = false;
 
+                        if ((battery + 10.0) < 100) {
+                            battery += 10;
+                        } else {
+                            battery = 100;
+                        }
+
+                        ShipmentLog updatedLog = shipmentLogService.updateShipmentLog(new ShipmentUpdateDto(DroneState.IDLE.getState(), battery), shipmentLog.getId());
+                        DroneUpdateDto droneUpdateDto = DroneUpdateDto
+                                .builder()
+                                .state(DroneState.IDLE.getState())
+                                .battery(battery)
+                                .build();
+                        httpClientWrapper.put(droneUrl.concat(ShipmentConstants.DRONE_UPDATE_URL).concat(updatedLog.getDroneId().toString())
+                                , new Gson().toJson(droneUpdateDto), null, BaseResponse.class, MessageFormat.format(Messages.FAILED_TO_CALL_SERVICE, "Drone"));
+
+                        if (battery == 100) {
+                            isNotCharged = false;
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            scheduledThread.start();
+        }
+    }
 
 
 }

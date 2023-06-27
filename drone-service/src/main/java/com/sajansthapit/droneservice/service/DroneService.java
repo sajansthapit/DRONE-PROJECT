@@ -1,6 +1,7 @@
 package com.sajansthapit.droneservice.service;
 
 import com.sajansthapit.droneservice.dto.BaseResponse;
+import com.sajansthapit.droneservice.dto.CheckDroneStateDto;
 import com.sajansthapit.droneservice.dto.DroneDto;
 import com.sajansthapit.droneservice.dto.DroneUpdateDto;
 import com.sajansthapit.droneservice.models.Drone;
@@ -50,4 +51,11 @@ public interface DroneService {
      * @return Drone
      */
     Drone updateDrone(DroneUpdateDto droneUpdateDto, Long id);
+
+    /**
+     * Method to check the drone state
+     * @param droneId Long
+     * @return CheckDroneStateDto
+     */
+    CheckDroneStateDto checkDroneState(Long droneId);
 }

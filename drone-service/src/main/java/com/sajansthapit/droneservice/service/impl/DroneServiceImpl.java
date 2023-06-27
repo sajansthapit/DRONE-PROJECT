@@ -3,6 +3,7 @@ package com.sajansthapit.droneservice.service.impl;
 import com.sajansthapit.droneservice.constants.DroneConstants;
 import com.sajansthapit.droneservice.constants.Messages;
 import com.sajansthapit.droneservice.dto.BaseResponse;
+import com.sajansthapit.droneservice.dto.CheckDroneStateDto;
 import com.sajansthapit.droneservice.dto.DroneDto;
 import com.sajansthapit.droneservice.dto.DroneUpdateDto;
 import com.sajansthapit.droneservice.exceptionhandler.exceptions.UniqueViolationException;
@@ -111,11 +112,26 @@ public class DroneServiceImpl implements DroneService {
             drone.setBattery(droneUpdateDto.getBattery());
         }
 
+        //updating the drone checking if the drone is returning or idle
         if (droneUpdateDto.getState() != null) {
-            drone.setState(droneUpdateDto.getState());
+            if(droneUpdateDto.getState().equals(DroneState.IDLE.getState())){
+                if(drone.getState().equals(DroneState.RETURNING.getState())){
+                    drone.setState(DroneState.IDLE.getState());
+                }else{
+                    if(drone.getState().equals(DroneState.IDLE.getState()))
+                        drone.setState(DroneState.IDLE.getState());
+                }
+            }else
+                drone.setState(droneUpdateDto.getState());
         }
 
         return droneRepository.save(drone);
+    }
+
+    @Override
+    public CheckDroneStateDto checkDroneState(Long droneId) {
+        Drone drone = findById(droneId);
+        return new CheckDroneStateDto(drone.getState());
     }
 
     private boolean isSerialNumberUnique(String serialNumber) {

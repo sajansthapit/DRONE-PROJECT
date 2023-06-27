@@ -2,6 +2,7 @@ package com.sajansthapit.droneservice.conroller;
 
 import com.sajansthapit.droneservice.constants.Messages;
 import com.sajansthapit.droneservice.dto.BaseResponse;
+import com.sajansthapit.droneservice.dto.CheckDroneStateDto;
 import com.sajansthapit.droneservice.dto.DroneUpdateDto;
 import com.sajansthapit.droneservice.exceptionhandler.exceptions.DroneUpdateFailedException;
 import com.sajansthapit.droneservice.models.Drone;
@@ -27,4 +28,11 @@ public class DroneController {
             return ResponseEntity.ok(new BaseResponse(HttpStatus.OK, Messages.DRONE_UPDATED));
         } else throw new DroneUpdateFailedException(Messages.DRONE_UPDATE_FAILED);
     }
+
+    @GetMapping("/check-state/{id}")
+    public ResponseEntity<CheckDroneStateDto> checkDroneState(@PathVariable(value = "id") Long id){
+        return ResponseEntity.ok(droneService.checkDroneState(id));
+    }
+
+
 }
