@@ -6,6 +6,17 @@ spring:
     username: postgres
     password: root
     initialization-mode: always
+  rabbitmq:
+    port: 5672
+    username: guest
+    password: guest
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
 user-defined:
   root:
     folder: medication-images

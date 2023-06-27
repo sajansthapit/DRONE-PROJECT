@@ -6,3 +6,20 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     initialization-mode: always
+  rabbitmq:
+    port: 5672
+    username: guest
+    password: guest
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://service-discovery/eureka/
+
+user-defined:
+  root:
+    folder: medication-images
+client:
+  url: http://client/

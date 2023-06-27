@@ -6,3 +6,14 @@ spring:
     username: postgres
     password: root
     initialization-mode: always
+  rabbitmq:
+    port: 5672
+    username: guest
+    password: guest
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://service-discovery/eureka/
