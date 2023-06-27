@@ -2,7 +2,7 @@ spring:
   application:
     name: MEDICATION-SERVICE
   profiles:
-    active: docker
+    active: dev
   mvc:
     pathmatch:
       matching-strategy: ant-path-matcher

@@ -6,4 +6,7 @@ public interface DroneConstants {
     Double CURRENT_LONGITUDE = 85.3104058;
     Integer TOTAL_MAX_DISTANCE = 10000; //meters
     Integer EARTH_RADIUS = 6371;
+
+    Double MAX_REQUIRED_BATTERY = 25.0;
+
 }

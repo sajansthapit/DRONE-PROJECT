@@ -1,5 +1,6 @@
 package com.sajansthapit.droneservice.service.impl;
 
+import com.sajansthapit.droneservice.constants.DroneConstants;
 import com.sajansthapit.droneservice.constants.Messages;
 import com.sajansthapit.droneservice.dto.BaseResponse;
 import com.sajansthapit.droneservice.dto.DroneDto;
@@ -70,27 +71,30 @@ public class DroneServiceImpl implements DroneService {
                     return Optional.of(drone);
                 }
             }
-        } else if (droneRequest.getTotalWeight() <= DroneModel.MIDDLE_WEIGHT.getMaxWeight()) {
+        }
+        if (droneRequest.getTotalWeight() <= DroneModel.MIDDLE_WEIGHT.getMaxWeight()) {
             for (Drone drone : droneList) {
                 if (drone.getModel().equals(DroneModel.MIDDLE_WEIGHT.getModel())) {
                     return Optional.of(drone);
                 }
             }
-        } else if (droneRequest.getTotalWeight() <= DroneModel.CRUISER_WEIGHT.getMaxWeight()) {
+        }
+        if (droneRequest.getTotalWeight() <= DroneModel.CRUISER_WEIGHT.getMaxWeight()) {
             for (Drone drone : droneList) {
                 if (drone.getModel().equals(DroneModel.CRUISER_WEIGHT.getModel())) {
                     return Optional.of(drone);
                 }
             }
-        } else if (droneRequest.getTotalWeight() <= DroneModel.HEAVY_WEIGHT.getMaxWeight()) {
+        }
+        if (droneRequest.getTotalWeight() <= DroneModel.HEAVY_WEIGHT.getMaxWeight()) {
             for (Drone drone : droneList) {
                 if (drone.getModel().equals(DroneModel.HEAVY_WEIGHT.getModel())) {
                     return Optional.of(drone);
                 }
             }
-        } else return Optional.empty();
-
+        }
         return Optional.empty();
+
 
     }
 
@@ -120,6 +124,11 @@ public class DroneServiceImpl implements DroneService {
     }
 
     private Double requiredBatteryPercentage(Double distance) {
-        return (distance / 1000) * 2;
+        double battery = (distance / 100) * 2;
+
+        if (battery < DroneConstants.MAX_REQUIRED_BATTERY)
+            return DroneConstants.MAX_REQUIRED_BATTERY;
+        else
+            return battery;
     }
 }
