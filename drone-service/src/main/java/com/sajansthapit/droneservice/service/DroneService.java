@@ -5,7 +5,6 @@ import com.sajansthapit.droneservice.dto.DroneDto;
 import com.sajansthapit.droneservice.dto.DroneUpdateDto;
 import com.sajansthapit.droneservice.models.Drone;
 import com.sajansthapit.droneservice.models.DroneRequest;
-import com.sajansthapit.droneservice.util.enumns.DroneState;
 
 import java.util.List;
 import java.util.Optional;

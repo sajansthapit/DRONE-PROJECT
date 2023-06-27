@@ -8,6 +8,8 @@ import com.sajansthapit.droneservice.service.DroneService;
 import com.sajansthapit.droneservice.service.DroneShipmentService;
 import com.sajansthapit.droneservice.util.enumns.DroneRequestStatus;
 import com.sajansthapit.droneservice.util.enumns.DroneState;
+import com.sajansthapit.droneservice.util.mq.ShipmentMessagePublisher;
+import com.sajansthapit.droneservice.util.mq.dto.ShipmentMessageDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -24,10 +26,13 @@ public class PendingDroneRequestQueue {
     private final DroneService droneService;
     private final DroneShipmentService droneShipmentService;
 
-    public PendingDroneRequestQueue(DroneRequestService droneRequestService, DroneService droneService, DroneShipmentService droneShipmentService) {
+    private final ShipmentMessagePublisher shipmentMessagePublisher;
+
+    public PendingDroneRequestQueue(DroneRequestService droneRequestService, DroneService droneService, DroneShipmentService droneShipmentService, ShipmentMessagePublisher shipmentMessagePublisher) {
         this.droneRequestService = droneRequestService;
         this.droneService = droneService;
         this.droneShipmentService = droneShipmentService;
+        this.shipmentMessagePublisher = shipmentMessagePublisher;
     }
 
     private final Queue<DroneRequest> droneRequestQueue = new ArrayDeque<>(10);
@@ -53,6 +58,15 @@ public class PendingDroneRequestQueue {
             Drone drone = droneService.updateDrone(updateDto, droneOptional.get().getId());
             droneShipmentService.saveDroneShipment(droneRequest, drone);
             droneRequestService.updateDroneRequestStatus(droneRequest, DroneRequestStatus.COMPLETED.getRequestStatus());
+
+            ShipmentMessageDto shipmentMessageDto = ShipmentMessageDto.builder()
+                    .droneId(drone.getId())
+                    .distance(droneRequest.getDistance())
+                    .battery(drone.getBattery())
+                    .droneState(DroneState.LOADED.getState())
+                    .build();
+            droneService.updateDrone(new DroneUpdateDto(DroneState.LOADED.getState(), drone.getBattery()), drone.getId());
+            shipmentMessagePublisher.publishMessageToShipment(shipmentMessageDto);
         }
 
     }

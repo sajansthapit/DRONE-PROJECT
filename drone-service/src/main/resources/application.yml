@@ -34,3 +34,4 @@ logging:
 
 queue:
   medication: medication-queue
+  shipment: shipment-queue
