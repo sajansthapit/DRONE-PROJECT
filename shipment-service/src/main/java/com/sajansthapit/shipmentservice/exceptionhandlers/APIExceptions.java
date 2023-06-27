@@ -1,9 +1,7 @@
-package com.sajansthapit.droneservice.exceptionhandler;
+package com.sajansthapit.shipmentservice.exceptionhandlers;
 
-import com.sajansthapit.droneservice.dto.BaseResponse;
-import com.sajansthapit.droneservice.exceptionhandler.exceptions.DroneUpdateFailedException;
-import com.sajansthapit.droneservice.exceptionhandler.exceptions.InvalidDroneModelException;
-import com.sajansthapit.droneservice.exceptionhandler.exceptions.UniqueViolationException;
+import com.sajansthapit.shipmentservice.dto.BaseResponse;
+import com.sajansthapit.shipmentservice.exceptionhandlers.exceptions.HttpFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -25,27 +23,22 @@ public class APIExceptions {
         return new ResponseEntity<>(response, response.getStatus());
     }
 
-    @ExceptionHandler(value = UniqueViolationException.class)
-    public ResponseEntity<BaseResponse> handleUniqueViolationException(UniqueViolationException exception) {
+
+    @ExceptionHandler(value = IllegalArgumentException.class)
+    public ResponseEntity<BaseResponse> handleIllegalArgumentException(IllegalArgumentException exception) {
         BaseResponse response = new BaseResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
         return new ResponseEntity<>(response, response.getStatus());
     }
 
-    @ExceptionHandler(value = InvalidDroneModelException.class)
-    public ResponseEntity<BaseResponse> handleInvalidDroneModelException(InvalidDroneModelException exception) {
-        BaseResponse response = new BaseResponse(HttpStatus.NOT_FOUND, exception.getMessage());
-        return new ResponseEntity<>(response, response.getStatus());
-    }
-
-    @ExceptionHandler(value = DroneUpdateFailedException.class)
-    public ResponseEntity<BaseResponse> handleDroneUpdateFailedException(DroneUpdateFailedException exception) {
-        BaseResponse response = new BaseResponse(HttpStatus.FORBIDDEN, exception.getMessage());
-        return new ResponseEntity<>(response, response.getStatus());
-    }
-
     @ExceptionHandler(value = EntityNotFoundException.class)
-    public ResponseEntity<BaseResponse> handleEntityNotFoundException(EntityNotFoundException exception){
+    public ResponseEntity<BaseResponse> handleEntityNotFoundException(EntityNotFoundException exception) {
         BaseResponse response = new BaseResponse(HttpStatus.NOT_FOUND, exception.getMessage());
+        return new ResponseEntity<>(response, response.getStatus());
+    }
+
+    @ExceptionHandler(value = HttpFailedException.class)
+    public ResponseEntity<BaseResponse> handleHttpFailedException(HttpFailedException exception) {
+        BaseResponse response = new BaseResponse(HttpStatus.SERVICE_UNAVAILABLE, exception.getMessage());
         return new ResponseEntity<>(response, response.getStatus());
     }
 }

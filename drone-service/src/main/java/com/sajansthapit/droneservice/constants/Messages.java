@@ -11,4 +11,7 @@ public interface Messages {
     String INVALID_MIN_WEIGHT = "Total weight must be greater than 0";
     String INVALID_MAX_WEIGHT = "Total weight must be smaller than 500";
     String DRONE_NOT_FOUND = "Drone with id {0} not found";
+    String DRONE_UPDATED = "Drone updated successfully";
+    String DRONE_UPDATE_FAILED = "Failed to update drone";
+
 }

@@ -11,6 +11,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Builder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "shipment_log")

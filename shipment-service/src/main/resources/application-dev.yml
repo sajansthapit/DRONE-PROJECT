@@ -6,3 +6,6 @@ spring:
     username: postgres
     password: root
     initialization-mode: always
+
+url:
+  drone: http://localhost:8082
