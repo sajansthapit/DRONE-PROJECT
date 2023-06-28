@@ -12,4 +12,5 @@ public class ShipmentMessageDto {
     private Double distance;
     private String droneState;
     private Double battery;
+    private Long clientId;
 }

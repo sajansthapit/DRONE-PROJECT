@@ -1,6 +1,5 @@
 package com.sajansthapit.clientservice.controller;
 
-import com.sajansthapit.clientservice.dto.BaseResponse;
 import com.sajansthapit.clientservice.dto.ClientDto;
 import com.sajansthapit.clientservice.dto.response.GetClientByIdResponseDto;
 import com.sajansthapit.clientservice.dto.response.SaveClientResponseDto;

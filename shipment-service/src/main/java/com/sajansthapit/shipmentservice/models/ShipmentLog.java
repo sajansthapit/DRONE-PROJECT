@@ -29,6 +29,8 @@ public class ShipmentLog {
 
     private Double battery;
 
+    private Long clientId;
+
     @CreationTimestamp
     @Column(updatable = false)
     private Date createdDate;

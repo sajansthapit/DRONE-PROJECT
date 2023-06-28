@@ -1,4 +1,6 @@
 package com.sajansthapit.notificationService.constants;
 
-public class NotificationConstants {
+public interface NotificationConstants  {
+
+     String CHECK_CLIENT_URL = "/api/client/check/";
 }

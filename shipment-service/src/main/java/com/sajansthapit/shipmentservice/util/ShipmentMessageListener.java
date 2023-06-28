@@ -99,8 +99,10 @@ public class ShipmentMessageListener {
                     , new Gson().toJson(droneUpdateDto), null, BaseResponse.class, MessageFormat.format(Messages.FAILED_TO_CALL_SERVICE, "Drone"));
             NotificationDto notificationDto = NotificationDto.builder()
                     .droneId(updatedLog.getDroneId())
-//                    .clientId(updatedLog)
+                    .clientId(updatedLog.getClientId())
+                    .droneState(DroneState.DELIVERED.getState())
                     .build();
+            notificationMessagePublisher.publishMessageToNotificationService(notificationDto);
             handleIdleDrone(updatedLog);
         }
     }

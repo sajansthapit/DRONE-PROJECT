@@ -26,6 +26,7 @@ public class ShipmentLogServiceImpl implements ShipmentLogService {
                 .distance(shipmentMessageDto.getDistance())
                 .droneState(shipmentMessageDto.getDroneState())
                 .battery(shipmentMessageDto.getBattery())
+                .clientId(shipmentMessageDto.getClientId())
                 .build();
         return shipmentLogRepository.save(shipmentLog);
     }
