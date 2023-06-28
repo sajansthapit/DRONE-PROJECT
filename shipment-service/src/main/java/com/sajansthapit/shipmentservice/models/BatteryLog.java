@@ -1,4 +1,4 @@
-package com.sajansthapit.batteryservice.models;
+package com.sajansthapit.shipmentservice.models;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;

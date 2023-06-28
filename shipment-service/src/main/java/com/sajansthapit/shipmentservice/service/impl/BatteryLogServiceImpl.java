@@ -1,10 +1,10 @@
 package com.sajansthapit.shipmentservice.service.impl;
 
 import com.sajansthapit.shipmentservice.dto.BatteryLogDto;
+import com.sajansthapit.shipmentservice.models.BatteryLog;
 import com.sajansthapit.shipmentservice.repository.BatteryLogRepository;
 import com.sajansthapit.shipmentservice.service.BatteryLogService;
 import org.springframework.stereotype.Service;
-import com.sajansthapit.batteryservice.models.BatteryLog;
 
 @Service
 public class BatteryLogServiceImpl implements BatteryLogService {
