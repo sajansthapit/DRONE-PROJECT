@@ -1,6 +1,6 @@
 spring:
   application:
-    name: SHIPMENT-SERVICE
+    name: NOTIFICATION-SERVICE
   profiles:
     active: dev
   mvc:
@@ -23,5 +23,4 @@ logging:
     com: DEBUG
 
 queue:
-  shipment: shipment-queue
   notification: notification-queue

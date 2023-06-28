@@ -10,6 +10,7 @@ import com.sajansthapit.shipmentservice.dto.ShipmentUpdateDto;
 import com.sajansthapit.shipmentservice.models.ShipmentLog;
 import com.sajansthapit.shipmentservice.service.ShipmentLogService;
 import com.sajansthapit.shipmentservice.util.dto.DroneUpdateDto;
+import com.sajansthapit.shipmentservice.util.dto.NotificationDto;
 import com.sajansthapit.shipmentservice.util.dto.ShipmentMessageDto;
 import com.sajansthapit.shipmentservice.util.enums.DroneState;
 import com.sajansthapit.shipmentservice.util.http.HttpClientWrapper;
@@ -26,14 +27,17 @@ public class ShipmentMessageListener {
 
     private final ShipmentLogService shipmentLogService;
     private final HttpClientWrapper httpClientWrapper;
+    private final NotificationMessagePublisher notificationMessagePublisher;
+
 
     @Value("${url.drone}")
     private String droneUrl;
 
 
-    public ShipmentMessageListener(ShipmentLogService shipmentLogService, HttpClientWrapper httpClientWrapper) {
+    public ShipmentMessageListener(ShipmentLogService shipmentLogService, HttpClientWrapper httpClientWrapper, NotificationMessagePublisher notificationMessagePublisher) {
         this.shipmentLogService = shipmentLogService;
         this.httpClientWrapper = httpClientWrapper;
+        this.notificationMessagePublisher = notificationMessagePublisher;
     }
 
     @RabbitListener(queues = "shipment-queue")
@@ -60,7 +64,6 @@ public class ShipmentMessageListener {
             handleDeliveredDrone(updatedLog);
         }
     }
-
     private void handleDeliveredDrone(ShipmentLog shipmentLog) {
         if (shipmentLog.getDroneState().equals(DroneState.DELIVERING.getState())) {
             double timeWait = shipmentLog.getDistance() / 100;
@@ -94,6 +97,10 @@ public class ShipmentMessageListener {
                     .build();
             httpClientWrapper.put(droneUrl.concat(ShipmentConstants.DRONE_UPDATE_URL).concat(updatedLog.getDroneId().toString())
                     , new Gson().toJson(droneUpdateDto), null, BaseResponse.class, MessageFormat.format(Messages.FAILED_TO_CALL_SERVICE, "Drone"));
+            NotificationDto notificationDto = NotificationDto.builder()
+                    .droneId(updatedLog.getDroneId())
+//                    .clientId(updatedLog)
+                    .build();
             handleIdleDrone(updatedLog);
         }
     }
