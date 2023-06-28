@@ -7,6 +7,7 @@ import com.sajansthapit.notificationService.dto.GetClientByIdResponseDto;
 import com.sajansthapit.notificationService.models.ClientVerification;
 import com.sajansthapit.notificationService.utils.enums.DroneState;
 import com.sajansthapit.notificationService.utils.http.HttpClientWrapper;
+import com.sajansthapit.notificationService.utils.mq.dto.RejectNotificationDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -44,6 +45,18 @@ public class SendMailService {
             sendEmail(clientDto.getEmail(), body, "OTP verification");
 
         }
+    }
+
+    public void sendRejectEmail(RejectNotificationDto rejectNotificationDto){
+        GetClientByIdResponseDto getClientByIdResponseDto = httpClientWrapper.get(
+                clientUrl.concat(NotificationConstants.CHECK_CLIENT_URL).concat(rejectNotificationDto.getClientId().toString()),
+                null,
+                GetClientByIdResponseDto.class,
+                MessageFormat.format(Messages.FAILED_TO_CALL_SERVICE, "Client"),
+                "Client");
+        ClientDto clientDto = getClientByIdResponseDto.getClientDto();
+        String body = "Your request for the drone has been rejected due to excess weight";
+        sendEmail(clientDto.getEmail(), body, "Reject Drone Request");
     }
 
     private void sendEmail(String email, String body, String subject) {

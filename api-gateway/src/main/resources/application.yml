@@ -20,6 +20,10 @@ spring:
           uri: lb://DRONE-SERVICE
           predicates:
             - Path=/api/drone/**
+        - id: NOTIFICATION-SERVICE
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/api/notification/**
 
 
 eureka:

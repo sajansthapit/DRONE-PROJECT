@@ -25,3 +25,4 @@ logging:
 queue:
   medication: medication-queue
   shipment: shipment-queue
+  reject-notification: reject-notification-queue

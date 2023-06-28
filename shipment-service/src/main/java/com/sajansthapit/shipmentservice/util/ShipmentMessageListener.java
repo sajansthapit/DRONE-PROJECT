@@ -5,9 +5,11 @@ import com.google.gson.Gson;
 import com.sajansthapit.shipmentservice.constants.Messages;
 import com.sajansthapit.shipmentservice.constants.ShipmentConstants;
 import com.sajansthapit.shipmentservice.dto.BaseResponse;
+import com.sajansthapit.shipmentservice.dto.BatteryLogDto;
 import com.sajansthapit.shipmentservice.dto.CheckDroneStateDto;
 import com.sajansthapit.shipmentservice.dto.ShipmentUpdateDto;
 import com.sajansthapit.shipmentservice.models.ShipmentLog;
+import com.sajansthapit.shipmentservice.service.BatteryLogService;
 import com.sajansthapit.shipmentservice.service.ShipmentLogService;
 import com.sajansthapit.shipmentservice.util.dto.DroneUpdateDto;
 import com.sajansthapit.shipmentservice.util.dto.NotificationDto;
@@ -28,16 +30,18 @@ public class ShipmentMessageListener {
     private final ShipmentLogService shipmentLogService;
     private final HttpClientWrapper httpClientWrapper;
     private final NotificationMessagePublisher notificationMessagePublisher;
+    private final BatteryLogService batteryLogService;
 
 
     @Value("${url.drone}")
     private String droneUrl;
 
 
-    public ShipmentMessageListener(ShipmentLogService shipmentLogService, HttpClientWrapper httpClientWrapper, NotificationMessagePublisher notificationMessagePublisher) {
+    public ShipmentMessageListener(ShipmentLogService shipmentLogService, HttpClientWrapper httpClientWrapper, NotificationMessagePublisher notificationMessagePublisher, BatteryLogService batteryLogService) {
         this.shipmentLogService = shipmentLogService;
         this.httpClientWrapper = httpClientWrapper;
         this.notificationMessagePublisher = notificationMessagePublisher;
+        this.batteryLogService = batteryLogService;
     }
 
     @RabbitListener(queues = "shipment-queue")
@@ -64,13 +68,13 @@ public class ShipmentMessageListener {
             handleDeliveredDrone(updatedLog);
         }
     }
+
     private void handleDeliveredDrone(ShipmentLog shipmentLog) {
         if (shipmentLog.getDroneState().equals(DroneState.DELIVERING.getState())) {
             double timeWait = shipmentLog.getDistance() / 100;
             Thread deliveredThread = new Thread(() -> {
                 try {
                     Thread.sleep((long) (timeWait * 1000));
-
                     ShipmentLog updatedLog = shipmentLogService.updateShipmentLog(new ShipmentUpdateDto(DroneState.DELIVERED.getState(), shipmentLog.getBattery() - timeWait), shipmentLog.getId());
                     DroneUpdateDto droneUpdateDto = DroneUpdateDto
                             .builder()
@@ -79,6 +83,8 @@ public class ShipmentMessageListener {
                             .build();
                     httpClientWrapper.put(droneUrl.concat(ShipmentConstants.DRONE_UPDATE_URL).concat(updatedLog.getDroneId().toString())
                             , new Gson().toJson(droneUpdateDto), null, BaseResponse.class, MessageFormat.format(Messages.FAILED_TO_CALL_SERVICE, "Drone"));
+                    BatteryLogDto batteryLogDto = new BatteryLogDto(shipmentLog.getDroneId(), shipmentLog.getBattery() - timeWait);
+                    batteryLogService.save(batteryLogDto);
                     handleReturningDrone(updatedLog);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -103,6 +109,7 @@ public class ShipmentMessageListener {
                     .droneState(DroneState.DELIVERED.getState())
                     .build();
             notificationMessagePublisher.publishMessageToNotificationService(notificationDto);
+
             handleIdleDrone(updatedLog);
         }
     }
@@ -123,6 +130,8 @@ public class ShipmentMessageListener {
                             .build();
                     httpClientWrapper.put(droneUrl.concat(ShipmentConstants.DRONE_UPDATE_URL).concat(updatedLog.getDroneId().toString())
                             , new Gson().toJson(droneUpdateDto), null, BaseResponse.class, MessageFormat.format(Messages.FAILED_TO_CALL_SERVICE, "Drone"));
+                    BatteryLogDto batteryLogDto = new BatteryLogDto(shipmentLog.getDroneId(), updatedLog.getBattery() - timeWait);
+                    batteryLogService.save(batteryLogDto);
                     chargeDrone(updatedLog);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -159,7 +168,8 @@ public class ShipmentMessageListener {
                                 .build();
                         httpClientWrapper.put(droneUrl.concat(ShipmentConstants.DRONE_UPDATE_URL).concat(updatedLog.getDroneId().toString())
                                 , new Gson().toJson(droneUpdateDto), null, BaseResponse.class, MessageFormat.format(Messages.FAILED_TO_CALL_SERVICE, "Drone"));
-
+                        BatteryLogDto batteryLogDto = new BatteryLogDto(shipmentLog.getDroneId(), battery);
+                        batteryLogService.save(batteryLogDto);
                         if (battery == 100) {
                             isNotCharged = false;
                         }

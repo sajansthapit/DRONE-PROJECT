@@ -95,8 +95,6 @@ public class DroneServiceImpl implements DroneService {
             }
         }
         return Optional.empty();
-
-
     }
 
     @Override

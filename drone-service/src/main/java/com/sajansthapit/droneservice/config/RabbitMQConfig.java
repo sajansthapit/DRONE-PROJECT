@@ -18,6 +18,9 @@ public class RabbitMQConfig {
     @Value("${queue.shipment}")
     private String shipmentQueue;
 
+    @Value("${queue.reject-notification}")
+    private String rejectNotificationQueue;
+
     @Bean
     @Qualifier("medicationQueue")
     public Queue medicationQueue() {
@@ -28,6 +31,12 @@ public class RabbitMQConfig {
     @Qualifier("shipmentQueue")
     public Queue shipmentQueue() {
         return new Queue(shipmentQueue);
+    }
+
+    @Bean
+    @Qualifier("rejectNotificationQueue")
+    public Queue rejectNotificationQueue(){
+        return new Queue(rejectNotificationQueue);
     }
 
     @Bean

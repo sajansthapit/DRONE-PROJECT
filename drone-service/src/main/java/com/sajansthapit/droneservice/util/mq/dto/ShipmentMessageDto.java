@@ -13,4 +13,5 @@ public class ShipmentMessageDto {
     private String droneState;
     private Double battery;
     private Long clientId;
+    private String requestId;
 }

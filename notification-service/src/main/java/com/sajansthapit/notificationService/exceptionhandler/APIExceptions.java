@@ -2,6 +2,7 @@ package com.sajansthapit.notificationService.exceptionhandler;
 
 import com.sajansthapit.notificationService.dto.BaseResponse;
 import com.sajansthapit.notificationService.exceptionhandler.exceptions.HttpFailedException;
+import com.sajansthapit.notificationService.exceptionhandler.exceptions.InvalidOtpException;
 import com.sajansthapit.notificationService.exceptionhandler.exceptions.UniqueViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,6 +47,12 @@ public class APIExceptions {
     @ExceptionHandler(value = HttpFailedException.class)
     public ResponseEntity<BaseResponse> handleHttpFailedException(HttpFailedException exception) {
         BaseResponse response = new BaseResponse(HttpStatus.SERVICE_UNAVAILABLE, exception.getMessage());
+        return new ResponseEntity<>(response, response.getStatus());
+    }
+
+    @ExceptionHandler(value = InvalidOtpException.class)
+    public ResponseEntity<BaseResponse> handleInvalidOtpException(InvalidOtpException exception){
+        BaseResponse response = new BaseResponse(HttpStatus.NOT_FOUND, exception.getMessage());
         return new ResponseEntity<>(response, response.getStatus());
     }
 }

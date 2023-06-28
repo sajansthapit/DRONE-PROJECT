@@ -31,6 +31,8 @@ public class ShipmentLog {
 
     private Long clientId;
 
+    private String requestId;
+
     @CreationTimestamp
     @Column(updatable = false)
     private Date createdDate;

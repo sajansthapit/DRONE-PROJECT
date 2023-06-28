@@ -24,3 +24,4 @@ logging:
 
 queue:
   notification: notification-queue
+  reject-notification: reject-notification-queue

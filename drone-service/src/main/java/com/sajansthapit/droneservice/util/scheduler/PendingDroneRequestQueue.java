@@ -65,6 +65,7 @@ public class PendingDroneRequestQueue {
                     .battery(drone.getBattery())
                     .droneState(DroneState.LOADED.getState())
                     .clientId(droneRequest.getClientId())
+                    .requestId(droneRequest.getRequestId())
                     .build();
             droneService.updateDrone(new DroneUpdateDto(DroneState.LOADED.getState(), drone.getBattery()), drone.getId());
             shipmentMessagePublisher.publishMessageToShipment(shipmentMessageDto);
