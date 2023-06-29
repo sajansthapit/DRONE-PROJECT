@@ -9,25 +9,25 @@ spring:
     gateway:
       routes:
         - id: CLIENT-SERVICE
-          uri: lb://client:8080
+          uri: http://client:8080
           predicates:
             - Path=/api/client/**
         - id: MEDICATION-SERVICE
-          uri: lb://medication:8081
+          uri: http://medication:8081
           predicates:
             - Path=/api/medication/**
         - id: DRONE-SERVICE
-          uri: lb://drone:8082
+          uri: http://drone:8082
           predicates:
             - Path=/api/drone/**
         - id: NOTIFICATION-SERVICE
-          uri: lb://notification:8084
+          uri: http://notification:8084
           predicates:
             - Path=/api/notification/**
         - id: SHIPMENT-SERVICE
-          uri: lb://shipment:8083
+          uri: http://shipment:8083
           predicates:
-            -Path=/api/shipment/**
+            - Path=/api/shipment/**
 
 
 eureka:

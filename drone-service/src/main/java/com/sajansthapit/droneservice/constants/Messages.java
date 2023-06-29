@@ -13,5 +13,8 @@ public interface Messages {
     String DRONE_NOT_FOUND = "Drone with id {0} not found";
     String DRONE_UPDATED = "Drone updated successfully";
     String DRONE_UPDATE_FAILED = "Failed to update drone";
+    String NO_AVAILABLE_DRONES = "No drones available";
+    String DRONES_FETCHED = "Drones fetched successfully";
+    String GET_DRONE_BATTERY_RESPONSE = "Drone battery level fetched successfully";
 
 }

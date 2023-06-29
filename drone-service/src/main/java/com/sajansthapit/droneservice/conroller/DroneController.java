@@ -4,6 +4,8 @@ import com.sajansthapit.droneservice.constants.Messages;
 import com.sajansthapit.droneservice.dto.BaseResponse;
 import com.sajansthapit.droneservice.dto.CheckDroneStateDto;
 import com.sajansthapit.droneservice.dto.DroneUpdateDto;
+import com.sajansthapit.droneservice.dto.GetBatteryLevelDto;
+import com.sajansthapit.droneservice.dto.response.GetAvailableDroneResponse;
 import com.sajansthapit.droneservice.exceptionhandler.exceptions.DroneUpdateFailedException;
 import com.sajansthapit.droneservice.models.Drone;
 import com.sajansthapit.droneservice.service.DroneService;
@@ -34,5 +36,16 @@ public class DroneController {
         return ResponseEntity.ok(droneService.checkDroneState(id));
     }
 
+    @GetMapping("/get-available")
+    public ResponseEntity<GetAvailableDroneResponse> getAvailableDrone(){
+        GetAvailableDroneResponse response = droneService.getAvailableDrones();
+        return new ResponseEntity<>(response, response.getStatus());
+    }
+
+    @GetMapping("/check-battery/{id}")
+    public ResponseEntity<GetBatteryLevelDto> getBatteryLevel(@PathVariable(value = "id") Long id){
+        GetBatteryLevelDto response = droneService.getBatteryLevelOfDrone(id);
+        return new ResponseEntity<>(response, response.getStatus());
+    }
 
 }

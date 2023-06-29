@@ -38,6 +38,7 @@ public class ShipmentLogServiceImpl implements ShipmentLogService {
                 .droneState(shipmentMessageDto.getDroneState())
                 .battery(shipmentMessageDto.getBattery())
                 .clientId(shipmentMessageDto.getClientId())
+                .requestId(shipmentMessageDto.getRequestId())
                 .build();
         return shipmentLogRepository.save(shipmentLog);
     }
@@ -62,7 +63,6 @@ public class ShipmentLogServiceImpl implements ShipmentLogService {
 
     @Override
     public GetDroneMedications getDroneMedication(Long droneId) {
-        //TODO: check if drone exits
 
         ShipmentLog shipmentLog = shipmentLogRepository.findByDroneIdAndDroneState(droneId, DroneState.DELIVERING.getState())
                 .orElseThrow(() -> new EntityNotFoundException(Messages.DRONE_NOT_FOUND));

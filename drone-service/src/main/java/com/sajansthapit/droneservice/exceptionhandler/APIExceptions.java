@@ -3,6 +3,7 @@ package com.sajansthapit.droneservice.exceptionhandler;
 import com.sajansthapit.droneservice.dto.BaseResponse;
 import com.sajansthapit.droneservice.exceptionhandler.exceptions.DroneUpdateFailedException;
 import com.sajansthapit.droneservice.exceptionhandler.exceptions.InvalidDroneModelException;
+import com.sajansthapit.droneservice.exceptionhandler.exceptions.NoAvailableDroneException;
 import com.sajansthapit.droneservice.exceptionhandler.exceptions.UniqueViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +45,13 @@ public class APIExceptions {
     }
 
     @ExceptionHandler(value = EntityNotFoundException.class)
-    public ResponseEntity<BaseResponse> handleEntityNotFoundException(EntityNotFoundException exception){
+    public ResponseEntity<BaseResponse> handleEntityNotFoundException(EntityNotFoundException exception) {
+        BaseResponse response = new BaseResponse(HttpStatus.NOT_FOUND, exception.getMessage());
+        return new ResponseEntity<>(response, response.getStatus());
+    }
+
+    @ExceptionHandler(value = NoAvailableDroneException.class)
+    public ResponseEntity<BaseResponse> handleNoAvailableDroneException(NoAvailableDroneException exception) {
         BaseResponse response = new BaseResponse(HttpStatus.NOT_FOUND, exception.getMessage());
         return new ResponseEntity<>(response, response.getStatus());
     }

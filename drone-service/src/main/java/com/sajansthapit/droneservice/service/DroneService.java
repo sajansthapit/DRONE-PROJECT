@@ -1,9 +1,7 @@
 package com.sajansthapit.droneservice.service;
 
-import com.sajansthapit.droneservice.dto.BaseResponse;
-import com.sajansthapit.droneservice.dto.CheckDroneStateDto;
-import com.sajansthapit.droneservice.dto.DroneDto;
-import com.sajansthapit.droneservice.dto.DroneUpdateDto;
+import com.sajansthapit.droneservice.dto.*;
+import com.sajansthapit.droneservice.dto.response.GetAvailableDroneResponse;
 import com.sajansthapit.droneservice.models.Drone;
 import com.sajansthapit.droneservice.models.DroneRequest;
 
@@ -54,8 +52,24 @@ public interface DroneService {
 
     /**
      * Method to check the drone state
+     *
      * @param droneId Long
      * @return CheckDroneStateDto
      */
     CheckDroneStateDto checkDroneState(Long droneId);
+
+    /**
+     * Method to get all available drones list
+     *
+     * @return GetAvailableDroneResponse
+     */
+    GetAvailableDroneResponse getAvailableDrones();
+
+    /**
+     * Get drone battery level
+     *
+     * @param id Long
+     * @return GetBatteryLevelDto
+     */
+    GetBatteryLevelDto getBatteryLevelOfDrone(Long id);
 }
