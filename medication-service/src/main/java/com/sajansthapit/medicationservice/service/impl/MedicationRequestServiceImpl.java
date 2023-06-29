@@ -3,8 +3,10 @@ package com.sajansthapit.medicationservice.service.impl;
 import com.sajansthapit.medicationservice.constants.MedicationConstants;
 import com.sajansthapit.medicationservice.constants.Messages;
 import com.sajansthapit.medicationservice.dto.BaseResponse;
+import com.sajansthapit.medicationservice.dto.MedicationDto;
 import com.sajansthapit.medicationservice.dto.request.client.ClientMedicationRequestDto;
 import com.sajansthapit.medicationservice.dto.request.client.MedicationRequestDto;
+import com.sajansthapit.medicationservice.dto.response.GetAllMedicationsOfRequestDto;
 import com.sajansthapit.medicationservice.dto.response.client.GetClientByIdResponseDto;
 import com.sajansthapit.medicationservice.exceptionhandler.exceptions.EmptyMedicationException;
 import com.sajansthapit.medicationservice.exceptionhandler.exceptions.InsufficientMedicationQuantityException;
@@ -21,11 +23,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.text.MessageFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class MedicationRequestServiceImpl implements MedicationRequestService {
@@ -100,6 +105,23 @@ public class MedicationRequestServiceImpl implements MedicationRequestService {
                 .build();
         sendMessageToDrone(droneMessageDto);
         return new BaseResponse(HttpStatus.OK, Messages.MEDICATION_REQUEST_SUCCESS);
+    }
+
+    @Override
+    public GetAllMedicationsOfRequestDto getAllMedicationsOfRequest(String requestId) {
+        List<MedicationRequest> medicationRequests = medicationRequestRepository.findAllByUniqueId(requestId);
+        if (medicationRequests.isEmpty()) {
+            throw new EntityNotFoundException(Messages.MEDICATION_REQUEST_NOT_FOUND);
+        }
+        List<MedicationDto> medicationDtoList = medicationRequests.stream().map(medicationRequest ->
+                MedicationDto.builder()
+                        .name(medicationRequest.getMedication().getName())
+                        .weight(medicationRequest.getMedication().getWeight())
+                        .code(medicationRequest.getMedication().getCode())
+                        .quantity(medicationRequest.getMedication().getQuantity())
+                        .image(medicationRequest.getMedication().getImage())
+                        .build()).collect(Collectors.toList());
+        return new GetAllMedicationsOfRequestDto(HttpStatus.OK, Messages.GET_ALL_MEDICATION_RESPONSE, medicationDtoList);
     }
 
     private void sendMessageToDrone(DroneMessageDto droneMessageDto) {

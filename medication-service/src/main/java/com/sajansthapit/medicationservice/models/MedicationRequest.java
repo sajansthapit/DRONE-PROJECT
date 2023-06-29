@@ -26,7 +26,6 @@ public class MedicationRequest {
 
     private String uniqueId;
 
-
     @ManyToOne(cascade = CascadeType.ALL)
     private Medication medication;
 

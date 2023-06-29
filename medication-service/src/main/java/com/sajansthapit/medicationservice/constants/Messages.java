@@ -23,5 +23,6 @@ public interface Messages {
     String EMPTY_MEDICATION = "Medication List can't be empty";
     String FAILED_TO_CALL_SERVICE = "Failed to call {0}";
     String CLIENT_NOT_FOUND = "Client with id {0} not found";
+    String MEDICATION_REQUEST_NOT_FOUND = "Medication Request for given requestId not found";
 
 }

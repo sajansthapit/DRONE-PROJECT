@@ -9,21 +9,25 @@ spring:
     gateway:
       routes:
         - id: CLIENT-SERVICE
-          uri: lb://CLIENT-SERVICE
+          uri: lb://client:8080
           predicates:
             - Path=/api/client/**
         - id: MEDICATION-SERVICE
-          uri: lb://MEDICATION-SERVICE
+          uri: lb://medication:8081
           predicates:
             - Path=/api/medication/**
         - id: DRONE-SERVICE
-          uri: lb://DRONE-SERVICE
+          uri: lb://drone:8082
           predicates:
             - Path=/api/drone/**
         - id: NOTIFICATION-SERVICE
-          uri: lb://NOTIFICATION-SERVICE
+          uri: lb://notification:8084
           predicates:
             - Path=/api/notification/**
+        - id: SHIPMENT-SERVICE
+          uri: lb://shipment:8083
+          predicates:
+            -Path=/api/shipment/**
 
 
 eureka:
@@ -31,4 +35,4 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://service-discovery:8761/eureka/

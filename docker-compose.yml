@@ -69,6 +69,20 @@ services:
       - DB_URL=jdbc:postgresql://postgres_db:5432/shipment_db
       - DB_USERNAME=postgres
       - DB_PASSWORD=root
+  notification:
+    build: ./notification-service
+    restart: always
+    ports:
+      - "8084:8084"
+    depends_on:
+      - api-gateway
+      - service-discovery
+      - rabbitmq
+      - postgres_db
+    environment:
+      - DB_URL=jdbc:postgresql://postgres_db:5432/notification_db
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=root
   rabbitmq:
     image: rabbitmq:3-management
     ports:

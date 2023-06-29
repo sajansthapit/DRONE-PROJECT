@@ -8,6 +8,7 @@ spring:
     initialization-mode: always
 
   rabbitmq:
+    host: rabbitmq
     port: 5672
     username: guest
     password: guest
@@ -28,4 +29,7 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://service-discovery/eureka/
+      defaultZone: http://service-discovery:8761/eureka/
+
+url:
+  client: http://client:8080

@@ -1,4 +1,4 @@
-server:
+erver:
   port: 8082
 spring:
   datasource:

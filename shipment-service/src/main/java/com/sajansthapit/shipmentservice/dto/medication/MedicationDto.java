@@ -1,4 +1,4 @@
-package com.sajansthapit.medicationservice.dto;
+package com.sajansthapit.shipmentservice.dto.medication;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

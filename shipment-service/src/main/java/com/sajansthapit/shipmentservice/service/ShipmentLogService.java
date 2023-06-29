@@ -1,5 +1,6 @@
 package com.sajansthapit.shipmentservice.service;
 
+import com.sajansthapit.shipmentservice.dto.GetDroneMedications;
 import com.sajansthapit.shipmentservice.dto.ShipmentUpdateDto;
 import com.sajansthapit.shipmentservice.models.ShipmentLog;
 import com.sajansthapit.shipmentservice.util.dto.ShipmentMessageDto;
@@ -30,5 +31,13 @@ public interface ShipmentLogService {
      * @return ShipmentLog
      */
     ShipmentLog updateShipmentLog(ShipmentUpdateDto shipmentUpdateDto, Long id);
+
+    /**
+     * Method to get the medications of the drone
+     *
+     * @param droneId Long
+     * @return GetDroneMedications
+     */
+    GetDroneMedications getDroneMedication(Long droneId);
 
 }
